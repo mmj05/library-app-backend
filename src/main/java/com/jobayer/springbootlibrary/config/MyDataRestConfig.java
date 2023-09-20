@@ -1,6 +1,7 @@
 package com.jobayer.springbootlibrary.config;
 
 import com.jobayer.springbootlibrary.entity.Book;
+import com.jobayer.springbootlibrary.entity.Review;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
@@ -18,8 +19,10 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
         HttpMethod[] theUnsupportedActions = {HttpMethod.POST, HttpMethod.PATCH, HttpMethod.DELETE, HttpMethod.PUT};
 
         config.exposeIdsFor(Book.class);
+        config.exposeIdsFor(Review.class);
         
         disableHttpMethods(Book.class, config, theUnsupportedActions);
+        disableHttpMethods(Review.class, config, theUnsupportedActions);
 
         cors.addMapping(config.getBasePath() +  "/**")
                 .allowedOrigins(theAllowedOrigins);
