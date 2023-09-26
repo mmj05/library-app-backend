@@ -1,10 +1,13 @@
 package com.jobayer.springbootlibrary.controller;
 
 import com.jobayer.springbootlibrary.entity.Book;
+import com.jobayer.springbootlibrary.responsemodels.ShelfCurrentLoansResponse;
 import com.jobayer.springbootlibrary.service.BookService;
 import com.jobayer.springbootlibrary.utils.ExtractJWT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin("http://localhost:3000")
 @RestController
@@ -16,6 +19,12 @@ public class BookController {
     @Autowired
     public BookController(BookService bookService) {
         this.bookService = bookService;
+    }
+
+    @GetMapping("/secure/currentloans")
+    public List<ShelfCurrentLoansResponse> currentLoans(@RequestHeader(value = "Authorization") String token) throws Exception {
+        String userEmail = ExtractJWT.payloadJWTExtraction(token, "\"sub\"");
+        return bookService.currentLoans(userEmail);
     }
 
     @GetMapping("/secure/currentloans/count")
