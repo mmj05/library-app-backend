@@ -126,7 +126,7 @@ public class BookService {
             throw new Exception("Book does not exist or not checked out by user");
         }
 
-        SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM--dd");
+        SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         Date d1 = sdFormat.parse(validateCheckout.getReturnDate());
         Date d2 = sdFormat.parse(LocalDate.now().toString());
