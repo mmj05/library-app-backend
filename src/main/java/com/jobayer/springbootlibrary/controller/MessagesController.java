@@ -1,6 +1,7 @@
 package com.jobayer.springbootlibrary.controller;
 
 import com.jobayer.springbootlibrary.entity.Message;
+import com.jobayer.springbootlibrary.requestmodels.AdminQuestionRequest;
 import com.jobayer.springbootlibrary.service.MessagesService;
 import com.jobayer.springbootlibrary.utils.ExtractJWT;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,5 +24,16 @@ public class MessagesController {
                             @RequestBody Message messageRequest) {
         String userEmail = ExtractJWT.payloadJWTExtraction(token, "\"sub\"");
         messagesService.postMessage(messageRequest, userEmail);
+    }
+
+    @PutMapping("/secure/admin/message")
+    public void putMessage(@RequestHeader(value = "Authorization") String token,
+                           @RequestBody AdminQuestionRequest adminQuestionRequest) throws Exception {
+        String userEmail = ExtractJWT.payloadJWTExtraction(token, "\"sub\"");
+        String admin = ExtractJWT.payloadJWTExtraction(token, "\"userType\"");
+        if (admin == null || !admin.equals("admin")) {
+            throw new Exception("Administration page only.");
+        }
+        messagesService.putMessage(adminQuestionRequest, userEmail);
     }
 }
