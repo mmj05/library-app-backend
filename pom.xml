@@ -14,7 +14,7 @@
 	<name>spring-boot-library</name>
 	<description>Spring Boot Application for React</description>
 	<properties>
-		<java.version>18</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 
