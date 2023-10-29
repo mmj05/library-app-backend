@@ -188,8 +188,7 @@ public class BookService {
                 LocalDate.now().toString(),
                 book.get().getTitle(),
                 book.get().getAuthor(),
-                book.get().getDescription(),
-                book.get().getImg()
+                book.get().getDescription()
         );
 
         historyRepository.save(history);
