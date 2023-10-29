@@ -11,7 +11,7 @@ public class History {
 
     public History() {}
 
-    public History(String userEmail, String checkoutDate, String returnedDate, String title, String author, String description, String img) {
+    public History(String userEmail, String checkoutDate, String returnedDate, String title, String author, String description) {
         this.userEmail = userEmail;
         this.checkoutDate = checkoutDate;
         this.returnedDate = returnedDate;
@@ -43,6 +43,4 @@ public class History {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "img")
-    private String img;
 }
