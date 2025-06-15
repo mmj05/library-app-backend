@@ -38,5 +38,22 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println("Password: admin123");
             System.out.println("Please change the password after first login!");
         }
+        
+        // Check if test user exists
+        if (!userRepository.findByEmail("testuser@library.com").isPresent()) {
+            // Create test user
+            User testUser = new User();
+            testUser.setEmail("testuser@library.com");
+            testUser.setPassword(passwordEncoder.encode("password"));
+            testUser.setFirstName("Test");
+            testUser.setLastName("User");
+            testUser.setRole(User.Role.USER);
+
+            userRepository.save(testUser);
+            
+            System.out.println("Test user created:");
+            System.out.println("Email: testuser@library.com");
+            System.out.println("Password: password");
+        }
     }
 } 
