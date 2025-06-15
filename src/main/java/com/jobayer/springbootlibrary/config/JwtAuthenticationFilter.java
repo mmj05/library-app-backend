@@ -29,9 +29,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Skip JWT processing for permitAll endpoints
+        // Skip JWT processing for permitAll endpoints, but NOT for /api/auth/me
         String requestPath = request.getRequestURI();
-        if (requestPath.startsWith("/api/auth/") || 
+        if ((requestPath.startsWith("/api/auth/") && !requestPath.equals("/api/auth/me")) || 
             requestPath.startsWith("/api/books/") && !requestPath.contains("/secure/") ||
             requestPath.startsWith("/api/reviews/") && !requestPath.contains("/secure/") ||
             requestPath.startsWith("/api/messages/") && !requestPath.contains("/secure/") ||
