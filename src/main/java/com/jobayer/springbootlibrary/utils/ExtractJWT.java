@@ -1,40 +1,43 @@
 package com.jobayer.springbootlibrary.utils;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ExtractJWT {
 
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
     public static String payloadJWTExtraction(String token, String extraction) {
+        
+        try {
+            // Remove Bearer prefix if present
+            token = token.replace("Bearer ", "");
 
-        token.replace("Bearer", "");
-
-        String[] chunks = token.split("\\.");
-        Base64.Decoder decoder = Base64.getUrlDecoder();
-
-        String payload = new String(decoder.decode(chunks[1]));
-
-        String[] entries = payload.split(",");
-
-        Map<String, String> map = new HashMap<String, String>();
-        for (String entry: entries) {
-            String[] keyValue = entry.split(":");
-            if (keyValue[0].equals(extraction)) {
-
-                int remove = 1;
-
-                if (keyValue[1].endsWith("}")) {
-                    remove = 2;
-                }
-                keyValue[1] = keyValue[1].substring(0, keyValue[1].length() - remove);
-                keyValue[1] = keyValue[1].substring(1);
-
-                map.put(keyValue[0], keyValue[1]);
+            // Split the JWT into its three parts
+            String[] chunks = token.split("\\.");
+            if (chunks.length < 2) {
+                return null;
             }
-        }
-        if (map.containsKey(extraction)) {
-            return map.get(extraction);
+            
+            // Decode the payload (second part)
+            Base64.Decoder decoder = Base64.getUrlDecoder();
+            String payload = new String(decoder.decode(chunks[1]));
+
+            // Parse JSON using Jackson
+            JsonNode jsonNode = objectMapper.readTree(payload);
+            
+            // Remove quotes from extraction key if present (e.g., "\"sub\"" -> "sub")
+            String cleanKey = extraction.replace("\"", "");
+            
+            // Extract the value
+            if (jsonNode.has(cleanKey)) {
+                return jsonNode.get(cleanKey).asText();
+            }
+            
+        } catch (Exception e) {
+            // Log error but don't spam console
+            // System.err.println("Error extracting JWT payload: " + e.getMessage());
         }
 
         return null;
