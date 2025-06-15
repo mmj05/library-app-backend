@@ -57,7 +57,8 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/register/admin").permitAll()
+                .requestMatchers("/api/auth/me").authenticated()
                 .requestMatchers("/api/books/secure/**").authenticated()
                 .requestMatchers("/api/reviews/secure/**").authenticated()
                 .requestMatchers("/api/messages/secure/**").authenticated()
