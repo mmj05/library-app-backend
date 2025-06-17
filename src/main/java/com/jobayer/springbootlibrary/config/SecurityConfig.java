@@ -55,25 +55,36 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/register/admin").permitAll()
-                .requestMatchers("/api/auth/me").authenticated()
-                .requestMatchers("/api/books/secure/**").authenticated()
-                .requestMatchers("/api/reviews/secure/**").authenticated()
-                .requestMatchers("/api/messages/secure/**").authenticated()
-                .requestMatchers("/api/payment/secure/**").authenticated()
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/books/**").permitAll()
-                .requestMatchers("/api/reviews/**").permitAll()
-                .requestMatchers("/api/messages/**").permitAll()
-                .requestMatchers("/api/payments/**").permitAll()
-                .requestMatchers("/api/histories/**").permitAll()
-                .anyRequest().authenticated()
-            )
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authenticationProvider(authenticationProvider())
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(authz -> authz
+                        // Public Auth endpoints
+                        .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/register/admin").permitAll() // Using constants would be better
+
+                        // Authenticated endpoints - specific paths first
+                        .requestMatchers("/api/auth/me").authenticated()
+                        .requestMatchers("/api/books/secure/**").authenticated()
+                        .requestMatchers("/api/reviews/secure/**").authenticated()
+                        .requestMatchers("/api/messages/secure/**").authenticated()
+                        .requestMatchers("/api/payments/secure/**").authenticated() // Consistent with filter now
+                        .requestMatchers("/api/histories/secure/**").authenticated() // Consistent with filter now
+
+                        // Admin specific endpoints
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                        // General public endpoints - consider if truly needed if filter handles it
+                        // These would act as fallback/explicit documentation
+                        .requestMatchers("/api/books/**").permitAll()
+                        .requestMatchers("/api/reviews/**").permitAll()
+                        .requestMatchers("/api/messages/**").permitAll()
+                        .requestMatchers("/api/payments/**").permitAll()
+                        .requestMatchers("/api/histories/**").permitAll()
+
+                        // Any other request must be authenticated by default
+                        .anyRequest().authenticated()
+                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
