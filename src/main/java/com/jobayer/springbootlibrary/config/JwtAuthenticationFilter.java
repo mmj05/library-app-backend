@@ -29,14 +29,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Skip JWT processing for permitAll endpoints, but NOT for /api/auth/me
         String requestPath = request.getRequestURI();
-        if ((requestPath.startsWith("/api/auth/") && !requestPath.equals("/api/auth/me")) || 
-            requestPath.startsWith("/api/books/") && !requestPath.contains("/secure/") ||
-            requestPath.startsWith("/api/reviews/") && !requestPath.contains("/secure/") ||
-            requestPath.startsWith("/api/messages/") && !requestPath.contains("/secure/") ||
-            requestPath.startsWith("/api/payments/") ||
-            requestPath.startsWith("/api/histories/")) {
+
+        // Skip JWT processing for public endpoints only
+        if (isPublicEndpoint(requestPath)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -56,16 +52,55 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-
-            if (jwtUtil.validateToken(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = 
-                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            try {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+                
+                if (jwtUtil.validateToken(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = 
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            } catch (Exception e) {
+                logger.warn("User authentication failed: " + e.getMessage());
             }
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isPublicEndpoint(String requestPath) {
+        // Auth endpoints (except /api/auth/me which requires authentication)
+        if (requestPath.startsWith("/api/auth/") && !requestPath.equals("/api/auth/me")) {
+            return true;
+        }
+
+        // Public book endpoints (non-secure)
+        if (requestPath.startsWith("/api/books/") && !requestPath.contains("/secure")) {
+            return true;
+        }
+
+        // Public review endpoints (non-secure)
+        if (requestPath.startsWith("/api/reviews/") && !requestPath.contains("/secure")) {
+            return true;
+        }
+
+        // Public message endpoints (non-secure)
+        if (requestPath.startsWith("/api/messages/") && !requestPath.contains("/secure")) {
+            return true;
+        }
+
+        // CHANGE FOR CONSISTENCY WITH SECURITY CONFIG
+        if (requestPath.startsWith("/api/payments/") && !requestPath.contains("/secure")) {
+            return true;
+        }
+
+        // CHANGE FOR CONSISTENCY WITH SECURITY CONFIG
+        if (requestPath.startsWith("/api/histories/") && !requestPath.contains("/secure")) {
+            return true;
+        }
+
+        // All other endpoints require authentication
+        return false;
     }
 } 
