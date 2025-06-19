@@ -65,7 +65,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/books/secure/**").authenticated()
                         .requestMatchers("/api/reviews/secure/**").authenticated()
                         .requestMatchers("/api/messages/secure/**").authenticated()
-                        .requestMatchers("/api/payments/secure/**").authenticated() // Consistent with filter now
+                        .requestMatchers("/api/payment/secure/**").authenticated() // Consistent with filter now
                         .requestMatchers("/api/histories/secure/**").authenticated() // Consistent with filter now
 
                         // Admin specific endpoints
@@ -76,7 +76,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/books/**").permitAll()
                         .requestMatchers("/api/reviews/**").permitAll()
                         .requestMatchers("/api/messages/**").permitAll()
-                        .requestMatchers("/api/payments/**").permitAll()
+                        .requestMatchers("/api/payment/**").permitAll()
                         .requestMatchers("/api/histories/**").permitAll()
 
                         // Any other request must be authenticated by default
