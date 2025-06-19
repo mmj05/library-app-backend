@@ -91,7 +91,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         // CHANGE FOR CONSISTENCY WITH SECURITY CONFIG
-        if (requestPath.startsWith("/api/payments/") && !requestPath.contains("/secure")) {
+        if (requestPath.startsWith("/api/payment/") && !requestPath.contains("/secure")) {
             return true;
         }
 
