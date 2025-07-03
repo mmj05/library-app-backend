@@ -11,7 +11,7 @@
     <groupId>com.jobayer</groupId>
     <artifactId>springbootlibrary</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spring-boot-library</name>
+    <name>library-app-backend</name>
     <description>Library Management System with Spring Boot</description>
 	<url/>
 	<licenses>
