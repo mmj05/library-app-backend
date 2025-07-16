@@ -1,5 +1,5 @@
 # Use multi-stage build for smaller final image
-FROM maven:3.9.8-openjdk-17-slim AS build
+FROM maven:3.9-eclipse-temurin-17-alpine AS build
 
 # Set working directory
 WORKDIR /app
@@ -17,10 +17,10 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Runtime stage
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jre-alpine
 
 # Install curl for health checks (optional)
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache curl
 
 # Create app directory and non-root user for security
 RUN groupadd -r appuser && useradd -r -g appuser appuser
