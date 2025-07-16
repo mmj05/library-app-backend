@@ -1,0 +1,53 @@
+# Maven
+target/
+!target/*.jar
+!target/**/lib/
+!target/**/classes/
+
+# IDE
+.idea/
+.vscode/
+*.iws
+*.iml
+*.ipr
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Logs
+*.log
+logs/
+
+# Node (if any frontend assets)
+node_modules/
+npm-debug.log*
+
+# Temporary files
+*.tmp
+*.temp
+
+# Documentation
+README.md
+*.md
+
+# Tests
+src/test/
+
+# Maven wrapper
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties 
