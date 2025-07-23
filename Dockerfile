@@ -30,8 +30,8 @@ RUN chown appuser:appuser /app
 # Copy the JAR file from build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Copy keystore if it exists (for HTTPS)
-COPY --chown=appuser:appuser src/main/resources/keystore.p12 /app/keystore.p12 2>/dev/null || true
+# Note: If you need HTTPS keystore, add it manually with:
+# COPY --chown=appuser:appuser src/main/resources/keystore.p12 /app/keystore.p12
 
 # Change to non-root user
 USER appuser
