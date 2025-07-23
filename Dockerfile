@@ -23,7 +23,7 @@ FROM eclipse-temurin:17-jre-alpine
 RUN apk add --no-cache curl
 
 # Create app directory and non-root user for security
-RUN groupadd -r appuser && useradd -r -g appuser appuser
+RUN addgroup -g 1001 -S appuser && adduser -u 1001 -S appuser -G appuser
 WORKDIR /app
 RUN chown appuser:appuser /app
 
